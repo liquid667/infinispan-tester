@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:infinispan:config:5.2 http://www.infinispan.org/schemas/infinispan-config-5.2.xsd"
+	xmlns="urn:infinispan:config:5.2">
+
+	<!-- Global cache/cluster settings -->
+	<global>
+		<!-- <globalJmxStatistics enabled="true" /> -->
+		<transport clusterName="infinispanCluster"
+			distributedSyncTimeout="10000"
+			transportClass="org.infinispan.remoting.transport.jgroups.JGroupsTransport">
+			<properties>
+				<property name="configurationFile" value="jgroups-tcp.xml" />
+			</properties>
+		</transport>
+		<shutdown hookBehavior="DEFAULT" />
+	</global>
+
+	<!-- Default Cache -->
+	<default>
+		<clustering mode="distribution">
+			<l1 enabled="true" lifespan="60000" />
+			<hash numOwners="2" />
+			<sync replTimeout="200000" />
+		</clustering>
+		<locking lockAcquisitionTimeout="30000" concurrencyLevel="1000" useLockStriping="false" />
+		<deadlockDetection enabled="true" />
+		<transaction autoCommit="true"
+			transactionManagerLookupClass="org.infinispan.transaction.lookup.GenericTransactionManagerLookup"
+			transactionMode="TRANSACTIONAL" lockingMode="OPTIMISTIC" />
+	</default>
+
+	<namedCache name="vehicleCache">
+		<clustering mode="distribution">
+			<l1 enabled="true" lifespan="60000" />
+			<hash numOwners="2" />
+			<sync replTimeout="200000" />
+		</clustering>
+		<locking lockAcquisitionTimeout="30000" concurrencyLevel="1000" useLockStriping="false" />
+		<deadlockDetection enabled="false" />
+		<transaction autoCommit="true"
+			transactionManagerLookupClass="org.infinispan.transaction.lookup.GenericTransactionManagerLookup"
+			transactionMode="TRANSACTIONAL" lockingMode="PESSIMISTIC" />
+	</namedCache>
+
+</infinispan>
